@@ -10,7 +10,7 @@ e2eTest: &e2eTest
     - run:
         name: Get e2e-harness binary
         command: |
-          wget -q $(curl -sS https://api.github.com/repos/giantswarm/e2e-harness/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+          wget https://github.com/giantswarm/e2e-harness/releases/download/minikube-v1.2.0/e2e-harness
           chmod +x ./e2e-harness
 
     - run: ./e2e-harness localkube
