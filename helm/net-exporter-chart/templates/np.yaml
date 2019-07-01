@@ -50,6 +50,8 @@ spec:
   - ports:
     - port: 443
       protocol: TCP
+    - port: 6443
+      protocol: TCP
     to:
     {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
     {{ range $index, $privateSubnet := $privateSubnets }}
