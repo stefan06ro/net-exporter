@@ -47,6 +47,9 @@ spec:
     - podSelector:
         matchLabels:
           k8s-app: {{ .Values.dns.label }}
+      namespaceSelector:
+        matchLabels:
+          name: kube-system
   - ports:
     - port: 443
       protocol: TCP
