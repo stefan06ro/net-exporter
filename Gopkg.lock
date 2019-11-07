@@ -786,6 +786,14 @@
   version = "v0.8.1"
 
 [[projects]]
+  digest = "1:447ab23604df9681aabfc6e48dbded59cb933b6eb4224e64d9d037318534b1bd"
+  name = "github.com/pkg/profile"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f6fe06335df110bcf1ed6d4e852b760bfc15beee"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:e89f2cdede55684adbe44b5566f55838ad2aee1dff348d14b73ccf733607b671"
   name = "github.com/prometheus/client_golang"
   packages = [
@@ -1695,6 +1703,8 @@
     "github.com/giantswarm/microerror",
     "github.com/giantswarm/micrologger",
     "github.com/giantswarm/operatorkit/client/k8srestconfig",
+    "github.com/google/go-cmp/cmp",
+    "github.com/pkg/profile",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/spf13/afero",
     "k8s.io/api/core/v1",
