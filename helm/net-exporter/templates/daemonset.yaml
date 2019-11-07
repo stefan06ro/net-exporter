@@ -21,9 +21,6 @@ spec:
       initContainers:
       - name: label-kube-system-namespace
         image: quay.io/giantswarm/namespace-labeler
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
       priorityClassName: giantswarm-critical
       containers:
       - name: net-exporter

@@ -8,7 +8,7 @@ metadata:
 spec:
   privileged: false
   runAsUser:
-    rule: MustRunAsNonRoot
+    rule: RunAsAny
   seLinux:
     rule: RunAsAny
   supplementalGroups:
