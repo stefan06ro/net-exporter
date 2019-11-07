@@ -39,7 +39,7 @@ func init() {
 }
 
 func main() {
-	defer profile.Start().Stop()
+	defer profile.Start(profile.CPUProfile, profile.ProfilePath("."), profile.ProfilePath(".")).Stop()
 
 	if len(os.Args) > 1 && (os.Args[1] == "version" || os.Args[1] == "--help") {
 		return
