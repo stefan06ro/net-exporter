@@ -3,8 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"math/rand"
 	"net"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 
@@ -45,6 +48,17 @@ func main() {
 	}
 
 	flag.Parse()
+	p := profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test"+string(rand.Intn(30))), profile.NoShutdownHook)
+
+	csig := make(chan os.Signal, 1)
+	signal.Notify(csig, os.Interrupt)
+	go func() {
+		for sig := range csig {
+			log.Printf("Captured %v, stopping profiler and exiting...", sig)
+			p.Stop()
+			os.Exit(0)
+		}
+	}()
 
 	var err error
 
@@ -130,6 +144,5 @@ func main() {
 		}
 	}
 
-	defer profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test/")).Stop()
 	exporter.Run()
 }
