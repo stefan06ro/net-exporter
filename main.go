@@ -130,6 +130,6 @@ func main() {
 		}
 	}
 
-	defer profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test/"), profile.NoShutdownHook).Stop()
+	defer profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test/")).Stop()
 	exporter.Run()
 }
