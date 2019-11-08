@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"math/rand"
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/pkg/profile"
@@ -48,16 +49,17 @@ func main() {
 	}
 
 	flag.Parse()
-	p := profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test"+string(rand.Intn(30))), profile.NoShutdownHook)
+	p := profile.Start(profile.CPUProfile, profile.ProfilePath("/tmp/test"+strconv.Itoa(rand.Intn(5))))
 
 	csig := make(chan os.Signal, 1)
-	signal.Notify(csig, os.Interrupt)
+	done := make(chan bool, 1)
+
+	signal.Notify(csig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	go func() {
-		for sig := range csig {
-			log.Printf("Captured %v, stopping profiler and exiting...", sig)
-			p.Stop()
-			os.Exit(0)
-		}
+		sig := <-csig
+		fmt.Println(sig)
+		p.Stop()
+		done <- true
 	}()
 
 	var err error
