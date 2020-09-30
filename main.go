@@ -28,6 +28,7 @@ var (
 	hosts              string
 	namespace          string
 	ntpServers         string
+	numNeighbors       int
 	port               string
 	service            string
 	timeout            time.Duration
@@ -41,6 +42,16 @@ func init() {
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
 	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
+
+	// numNeighbours is the number of neighbours for the net-exporter to dial.
+	// The lower the number, the higher the likelihood that a net-exporter is not dialed
+	// in case of failures - e.g: if numNeighbours is 1, if a single net-exporter is down,
+	// its neighbour will not be pinged.
+	// The higher the number, the higher the cardinality of network latency metrics exposed
+	// by the net-exporter.
+	// Having a value of 2 means that 2 specific net-exporters need to be down
+	// for one net-exporter to not be dialed, without exposing very high cardinality metrics.
+	flag.IntVar(&numNeighbors, "num-neighbors", 2, "The number of neighbors to probe. Set to 0 to probe all available neighbors.")
 }
 
 func main() {
@@ -118,6 +129,8 @@ func main() {
 			Namespace: namespace,
 			Port:      port,
 			Service:   service,
+
+			NumNeighbours: numNeighbors,
 		}
 
 		networkCollector, err = network.New(c)

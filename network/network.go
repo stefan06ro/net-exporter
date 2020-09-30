@@ -25,16 +25,6 @@ const (
 	bucketStart  = 0.001
 	bucketFactor = 2
 	numBuckets   = 5
-
-	// numNeighbours is the number of neighbours for the net-exporter to dial.
-	// The lower the number, the higher the likelihood that a net-exporter is not dialed
-	// in case of failures - e.g: if numNeighbours is 1, if a single net-exporter is down,
-	// its neighbour will not be pinged.
-	// The higher the number, the higher the cardinality of network latency metrics exposed
-	// by the net-exporter.
-	// Having a value of 2 means that 2 specific net-exporters need to be down
-	// for one net-exporter to not be dialed, without exposing very high cardinality metrics.
-	numNeighbours = 2
 )
 
 // Config provides the necessary configuration for creating a Collector.
@@ -46,6 +36,8 @@ type Config struct {
 	Namespace string
 	Port      string
 	Service   string
+
+	NumNeighbours int
 }
 
 // Collector implements the Collector interface, exposing network latency information.
@@ -63,6 +55,8 @@ type Collector struct {
 
 	errorCount     prometheus.Counter
 	dialErrorCount *prometheus.CounterVec
+
+	numNeighbours int
 }
 
 // New creates a Collector, given a Config.
@@ -163,7 +157,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	hosts := []string{}
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets)
+	neighbours, err := c.getNeighbours(c.numNeighbours, endpoints.Subsets)
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
@@ -295,6 +289,10 @@ func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []
 	sort.Strings(addresses)
 
 	neighbours := []string{}
+
+	if n == 0 {
+		n = len(addresses)
+	}
 
 	if n > len(addresses) {
 		n = len(addresses)
