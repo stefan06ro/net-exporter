@@ -59,6 +59,7 @@ Name | Description
 -----|-------------
 dns | Exposes DNS latency statistics. Performs host lookups, exposing the time taken per host.
 network | Exposes network latency statistics. Performs dials to the other net-exporter Pods, exposing the time taken per host.
+ntp | Exposes ntp latency statistics and erros
 
 ## Metrics
 
@@ -70,6 +71,9 @@ Name | Description
 `network_latency_seconds_bucket` | A Prometheus Histogram of network latency. See also `network_latency_seconds_count` and `network_latency_seconds_sum`.
 `network_dial_error_total` | The total number of errors encountered dialing other hosts.
 `network_error_total` | The total number of internal errors encountered testing network latency.
+`ntp_latency_seconds` | Histogram of latency of NTP sync requests. See also `ntp_latency_seconds_count` and `ntp_latency_seconds_sum`.
+`ntp_error_total` | Total number of internal errors.
+`ntp_sync_error_total` | Total number of errors ntp syncs.
 
 For example (some labels ommited for clarity):
 ```

@@ -36,7 +36,7 @@ type Config struct {
 	NTPServers []string
 }
 
-// Collector implements the Collector interface, exposing DNS latency information.
+// Collector implements the Collector interface, exposing ntp latency information.
 type Collector struct {
 	logger micrologger.Logger
 
